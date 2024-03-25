@@ -3,10 +3,12 @@
 
 ## Uso del repositorio
 
-Este repositorio utiliza [pre-commit](https://pre-commit.com) para validaciones de formato. Para trabajar con el mismo usted debería tener instalado:
+Este repositorio utiliza las siguientes herramientas:
 
-1. pre-commit (https://pre-commit.com/#install)
-2. cpp-check (https://cppcheck.sourceforge.io)
+1. [clang-format] () para el mantenimiento del codigo escrito en lenguaje C
+2. [pre-commit] (https://pre-commit.com/#install) para validaciones generales de formato de repositorio
+3. [Ceedling] () para ejecutar las pruebas unitarias en forma automatizada
+4. [lcov] () para generar los informes de cobertura de las pruebas unitarias
 
 Después de clonar el repositorio usted debería ejecutar el siguiente comando:
 
@@ -14,14 +16,20 @@ Después de clonar el repositorio usted debería ejecutar el siguiente comando:
 pre-commit install
 ```
 
-Para generar la documentación del proyecto se utiliza el siguiente comando:
+Para ejecutar las pruebas unitarias se utiliza el siguiente comando:
+
+```
+ceedling test:all
+```
+
+Para generar informes de cobertura de las pruebas se utiliza el siguiente comando:
+
+```
+ceedling clobber gcov:all utils:gcov
+```
+
+Para generar la documentacion del proyecto se utiliza el siguiente comando:
 
 ```
 make doc
-```
-
-Para compilar el proyecto se utiliza el siguiente comando:
-
-```
-make all
 ```
