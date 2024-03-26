@@ -30,6 +30,25 @@ SPDX-License-Identifier: MIT
 
 /* === Macros definitions ====================================================================== */
 
+#define TEST_ALL_LEDS_OFF 0x00
+#define TEST_ALL_LEDS_ON  0xFF
+#define TEST_LED01        1
+#define TEST_LED02        2
+#define TEST_LED03        3
+#define TEST_LED04        4
+#define TEST_LED05        5
+#define TEST_LED06        6
+#define TEST_LED07        7
+#define TEST_LED08        8
+#define TEST_LED09        9
+#define TEST_LED10        10
+#define TEST_LED11        11
+#define TEST_LED12        12
+#define TEST_LED13        13
+#define TEST_LED14        14
+#define TEST_LED15        15
+#define TEST_LED16        16
+
 /* === Private data type declarations ========================================================== */
 
 /* === Private variable declarations =========================================================== */
@@ -60,7 +79,7 @@ void setUp(void) {
 void test_todos_los_leds_inician_apagados(void) {
     leds_virtuales = 0xFF;
     leds_init(&leds_virtuales);
-    TEST_ASSERT_EQUAL_UINT16(ALL_LEDS_OFF, leds_virtuales);
+    TEST_ASSERT_EQUAL_UINT16(TEST_ALL_LEDS_OFF, leds_virtuales);
 }
 
 /**
@@ -72,11 +91,11 @@ void test_todos_los_leds_inician_apagados(void) {
  * @return -
  */
 void test_prender_un_led(void) {
-    leds_turn_on(LED03);
+    leds_turn_on(TEST_LED03);
     // Bit 2 en alto
-    TEST_ASSERT_BIT_HIGH((LED03 - 1), leds_virtuales);
+    TEST_ASSERT_BIT_HIGH((TEST_LED03 - 1), leds_virtuales);
     // Todos los otros bits estan en bajo
-    TEST_ASSERT_BITS_LOW(~(1 << (LED03 - 1)), leds_virtuales);
+    TEST_ASSERT_BITS_LOW(~(1 << (TEST_LED03 - 1)), leds_virtuales);
 }
 
 /**
@@ -87,9 +106,9 @@ void test_prender_un_led(void) {
  * @return -
  */
 void test_apagar_un_led(void) {
-    leds_turn_on(LED05);
-    leds_turn_off(LED05);
-    TEST_ASSERT_EQUAL_UINT16(ALL_LEDS_OFF, leds_virtuales);
+    leds_turn_on(TEST_LED05);
+    leds_turn_off(TEST_LED05);
+    TEST_ASSERT_EQUAL_UINT16(TEST_ALL_LEDS_OFF, leds_virtuales);
 }
 
 /**
@@ -100,23 +119,25 @@ void test_apagar_un_led(void) {
  * @return -
  */
 void test_prender_apagar_leds(void) {
-    leds_turn_on(LED02);
-    leds_turn_on(LED05);
-    leds_turn_off(LED02);
+    leds_turn_on(TEST_LED02);
+    leds_turn_on(TEST_LED05);
+    leds_turn_off(TEST_LED02);
     TEST_ASSERT_EQUAL_UINT16(0x10, leds_virtuales);
 }
 
 /**
  * @brief Test 5
  *        Con todos los leds apagados prender un led y verificar que al consultar el estado del
- * mismo me informa que esta prendido
+ * mismo me informa que esta prendido. Lo mismo pero apagando.
  *
  * @param  -
  * @return -
  */
 void test_leer_estado_de_leds(void) {
-    leds_turn_on(LED06);
-    TEST_ASSERT_TRUE(leds_get_status(LED06));
+    leds_turn_on(TEST_LED06);
+    TEST_ASSERT_TRUE(leds_get_status(TEST_LED06));
+    leds_turn_off(TEST_LED06);
+    TEST_ASSERT_FALSE(leds_get_status(TEST_LED06));
 }
 
 /**
@@ -128,7 +149,7 @@ void test_leer_estado_de_leds(void) {
  */
 void test_prender_todos_los_leds(void) {
     leds_turn_on_all();
-    TEST_ASSERT_EQUAL_UINT16(ALL_LEDS_ON, leds_virtuales);
+    TEST_ASSERT_EQUAL_UINT16(TEST_ALL_LEDS_ON, leds_virtuales);
 }
 
 /**
@@ -143,7 +164,7 @@ void test_apagar_todos_los_leds(void) {
     leds_turn_on_all();
     // Apaga todos los leds
     leds_turn_off_all();
-    TEST_ASSERT_EQUAL_UINT16(ALL_LEDS_OFF, leds_virtuales);
+    TEST_ASSERT_EQUAL_UINT16(TEST_ALL_LEDS_OFF, leds_virtuales);
 }
 
 /**
@@ -154,10 +175,10 @@ void test_apagar_todos_los_leds(void) {
  * @return -
  */
 void test_comprobar_limites(void) {
-    leds_turn_on(LED16);
-    TEST_ASSERT_BIT_HIGH((LED16 - 1), leds_virtuales);
-    leds_turn_on(LED01);
-    TEST_ASSERT_BIT_HIGH((LED01 - 1), leds_virtuales);
+    leds_turn_on(TEST_LED16);
+    TEST_ASSERT_BIT_HIGH((TEST_LED16 - 1), leds_virtuales);
+    leds_turn_on(TEST_LED01);
+    TEST_ASSERT_BIT_HIGH((TEST_LED01 - 1), leds_virtuales);
 }
 
 /**
@@ -170,11 +191,11 @@ void test_comprobar_limites(void) {
  */
 void test_comprobar_prohibidos_turn_on(void) {
     // verifica 2 valore por encima de 16 y 2 valores por debajo de 1
-    leds_turn_on(LED16 + 1);
-    leds_turn_on(LED16 + 17);
-    leds_turn_on(LED01 - 1);
-    leds_turn_on(LED01 - 17);
-    TEST_ASSERT_EQUAL_UINT16(ALL_LEDS_OFF, leds_virtuales);
+    leds_turn_on(TEST_LED16 + 1);
+    leds_turn_on(TEST_LED16 + 17);
+    leds_turn_on(TEST_LED01 - 1);
+    leds_turn_on(TEST_LED01 - 17);
+    TEST_ASSERT_EQUAL_UINT16(TEST_ALL_LEDS_OFF, leds_virtuales);
 }
 
 /**
@@ -188,12 +209,12 @@ void test_comprobar_prohibidos_turn_on(void) {
 void test_comprobar_prohibidos_turn_off(void) {
     leds_turn_on_all();
     // verifica 2 valore por encima de 16 y 2 valores por debajo de 1
-    leds_turn_off(LED16 + 1);
-    leds_turn_off(LED16 + 17);
-    leds_turn_off(LED01 - 1);
-    leds_turn_off(LED01 - 17);
+    leds_turn_off(TEST_LED16 + 1);
+    leds_turn_off(TEST_LED16 + 17);
+    leds_turn_off(TEST_LED01 - 1);
+    leds_turn_off(TEST_LED01 - 17);
     // leds_turn_off(LED02);
-    TEST_ASSERT_EQUAL_UINT16(ALL_LEDS_ON, leds_virtuales);
+    TEST_ASSERT_EQUAL_UINT16(TEST_ALL_LEDS_ON, leds_virtuales);
 }
 
 /**
@@ -207,9 +228,9 @@ void test_comprobar_prohibidos_turn_off(void) {
 void test_comprobar_prohibidos_get_status() {
     leds_turn_on_all();
     // verifica 2 valore por encima de 16 y 2 valores por debajo de 1
-    TEST_ASSERT_FALSE(leds_get_status(LED16 + 1));
-    TEST_ASSERT_FALSE(leds_get_status(LED16 + 17));
-    TEST_ASSERT_FALSE(leds_get_status(LED01 - 1));
-    TEST_ASSERT_FALSE(leds_get_status(LED01 - 17));
+    TEST_ASSERT_FALSE(leds_get_status(TEST_LED16 + 1));
+    TEST_ASSERT_FALSE(leds_get_status(TEST_LED16 + 17));
+    TEST_ASSERT_FALSE(leds_get_status(TEST_LED01 - 1));
+    TEST_ASSERT_FALSE(leds_get_status(TEST_LED01 - 17));
 }
 /* === End of documentation ==================================================================== */
